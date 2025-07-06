@@ -1,6 +1,7 @@
 from src.gelectra_base import GelecTagModel
 from src.gbert_base import GbertTagModel
 from src.gbert_dmbdz import GBERTdmbdzTagModel
+from src.xml_roberta import RobertaTagModel
 from src.losses import FocalLoss, JaccardLoss
 from src.sift import AdverserialLearner, hook_sift_layer
 import random
@@ -17,7 +18,6 @@ def seed_everything(seed):
     torch.cuda.manual_seed(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = True
-
 
 
 def tokenize(example, tokenizer, label2id, max_length, method='first_subword'):
@@ -67,7 +67,7 @@ class fbetaScore:
     def compute_scores(self,):
         for idx, (aspect, category) in enumerate(self.predicted_aspects):
             self.pred_dict[(aspect, category)].add(idx)
-        for idx, (aspect, cateogry) in enumerate(self.labeled_aspects):
+        for idx, (aspect, category) in enumerate(self.labeled_aspects):
             self.label_dict[(aspect, category)].add(idx)
 
         aspect_names = set(aspect for aspect, _ in self.predicted_aspects + self.labeled_aspects)
@@ -102,8 +102,4 @@ class fbetaScore:
 
         final_avg_fbeta = np.mean(list(category_scores.values())) if category_scores else 0.0
         return category_scores, final_avg_fbeta
-
-
-
-
 
