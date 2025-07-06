@@ -11,15 +11,6 @@ import numpy as np
 import torch
 import pandas as pd
 
-def seed_everything(seed):
-    random.seed(seed)
-    os.environ['PYTHONHASHEED'] = str(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = True
-
 
 def read_data(file_path, file_type='tsv'):
     if file_type == 'tsv':
@@ -60,8 +51,32 @@ def exploratory_analysis(df):
     plt.tight_layout()
     plt.show()
 
-def bio_categorization(train_df):
-    pass
+
+def rectify_categorization(train_df, method='BIO'):
+    if method=='BIO':
+        train_df.Tag = train_df.Tag.apply(lambda x: "B-"+x if x!='' and x!='O' else x)
+        empty_mask = train_df['Tag'] == ''
+        train_df['filled'] = train_df['Tag'].replace('', pd.NA).ffill()
+        for idx, ele in empty_mask.items():
+            if ele == True and train_df.loc[idx, 'filled']!='O':
+                train_df.loc[idx, 'filled'] = "I-"+train_df.loc[idx, 'filled'].removeprefix("B-")
+        train_df['Tag'] = train_df['filled']
+        train_df.drop(columns='filled', inplace=True)
+        train_df['Tag'].replace("")
+        return train_df
+    
+    else:
+        empty_mask = train_df['Tag'] == ''
+        train_df['filled'] = train_df['Tag'].replace('', pd.NA).ffill()
+        train_df.loc[empty_mask, 'Tag'] = train_df.loc[empty_mask, 'filled'] + '_r'
+        train_df.drop(columns='filled', inplace=True)
 
 def main():
-    pass
+    train_df = pd.read_csv("./old_data/data/tagged_train.tsv", sep='\t', keep_default_na=False, na_values=None)
+    exploratory_analysis(train_df)
+    preprocessed_df = rectify_categorization(train_df.copy)
+    preprocessed_df.to_csv("./data/pre_proc_train.csv")
+
+if __name__ == '__main__':
+    main()
+
