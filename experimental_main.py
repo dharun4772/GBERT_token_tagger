@@ -6,7 +6,7 @@ from src.gbert_base import GbertTagModel
 from src.gbert_dmbdz import GBERTdmbdzTagModel
 from src.xml_roberta import RobertaTagModel
 from src.losses import FocalLoss, JaccardLoss
-from src.sift import AdverserialLearner, hook_sift_layer
+from src.sift import AdversarialLearner, hook_sift_layer
 import pandas as pd
 import torch
 
@@ -49,5 +49,6 @@ if __name__ == "__main__":
     }
 
     train_pipeline(preprocessed_df, training_config)
+    # print(training_config)
 
     

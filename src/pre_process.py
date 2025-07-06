@@ -62,7 +62,6 @@ def rectify_categorization(train_df, method='BIO'):
                 train_df.loc[idx, 'filled'] = "I-"+train_df.loc[idx, 'filled'].removeprefix("B-")
         train_df['Tag'] = train_df['filled']
         train_df.drop(columns='filled', inplace=True)
-        train_df['Tag'].replace("")
         return train_df
     
     else:
@@ -71,12 +70,12 @@ def rectify_categorization(train_df, method='BIO'):
         train_df.loc[empty_mask, 'Tag'] = train_df.loc[empty_mask, 'filled'] + '_r'
         train_df.drop(columns='filled', inplace=True)
 
-def main():
-    train_df = pd.read_csv("./old_data/data/tagged_train.tsv", sep='\t', keep_default_na=False, na_values=None)
-    exploratory_analysis(train_df)
-    preprocessed_df = rectify_categorization(train_df.copy)
-    preprocessed_df.to_csv("./data/pre_proc_train.csv")
+# def main():
+#     train_df = pd.read_csv("./old_data/data/tagged_train.tsv", sep='\t', keep_default_na=False, na_values=None)
+#     exploratory_analysis(train_df)
+#     preprocessed_df = rectify_categorization(train_df.copy)
+#     preprocessed_df.to_csv("./data/pre_proc_train.csv")
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
 
