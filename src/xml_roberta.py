@@ -1,4 +1,4 @@
-from transformers import AutoToeknizer, AutoModel
+from transformers import AutoTokenizer, AutoModel
 from transformers import PreTrainedModel, AutoConfig
 from transformers.modeling_outputs import TokenClassifierOutput
 import torch
